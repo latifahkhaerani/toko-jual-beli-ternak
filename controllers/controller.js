@@ -5,6 +5,7 @@ const {
   User,
   Transaction,
 } = require("../models/index");
+const bcrypt = require("bcryptjs");
 
 class Controller {
   // Home => tampilan utama
@@ -94,16 +95,19 @@ class Controller {
       // cari usernya melalui email
       const user = await User.findOne({ where: { email } });
 
-      // validasi kalau usernya gak ada atau passwordnya ga ada
-      if (!user || user.password !== password) {
-        return res.send("Email atau password salah!");
+      if (user) {
+        const passwordBcrypt = bcrypt.compareSync(password, user.password); // Membandingkan teks vs hash
+
+        if (passwordBcrypt) {
+          // Jika cocok, set session login seperti biasa
+          req.session.userId = user.id;
+          req.session.userRole = user.role;
+
+          return res.redirect("/stock");
+        }
       }
 
-      //  biar dinamis sewaktu login menggunakan build in func session
-      req.session.userId = user.id;
-      req.session.userRole = user.role;
-
-      res.redirect("/");
+      return res.send("Email atau Password Salah");
     } catch (error) {
       console.log(error);
       res.send(error);
@@ -135,10 +139,10 @@ class Controller {
   // stock
   static async getStock(req, res) {
     try {
-      // 1. Ambil query parameter untuk fitur Search/Filter dan notification
+      // kita ambil search dan notifikasinya
       const { search, notification } = req.query;
 
-      // 2. Siapkan konfigurasi Eager Loading dasar
+      // buat konfigurasi Eager Loading dasar
       let options = {
         include: {
           model: User,
@@ -148,16 +152,16 @@ class Controller {
         },
         order: [["id", "ASC"]], // Mengurutkan berdasarkan ID terkecil secara default
       };
-      // 3. Jika user mengetik sesuatu di kolom search, gunakan Operator Sequelize (Op.iLike atau Op.like)
+
       if (search) {
         options.where = {
           type: {
-            [Op.iLike]: `%${search}%`, // iLike digunakan agar tidak case-sensitive (PostgreSQL cocok sekali)
+            [Op.iLike]: `%${search}%`,
           },
         };
       }
 
-      // 4. Panggil Static Method yang sudah kita buat di model Livestock
+      // Panggil Static Method yang sudah kita buat di model Livestock
       const livestocks = await Livestock.getAvailableLivestocks(options);
 
       // 5. Kirim data ke file ejs (misal nama filenya: stockList.ejs)
@@ -206,7 +210,7 @@ class Controller {
     try {
       const { name, type, price, gender } = req.body;
 
-      // DINAMIS: Ambil ID dari peternak yang sedang login melalui session
+      // Ambil ID dari peternak yang sedang login melalui session
       const UserId = req.session.userId;
 
       if (!UserId) {
@@ -215,8 +219,23 @@ class Controller {
         );
       }
 
+      // ambil naam file dari multer jika ada file yang di unggah
+      let imageUrl = null;
+      if (req.file) {
+        imageUrl = `/uploads/${req.file.filename}`;
+      }
+      console.log(req.file);
+      console.log(imageUrl, "=========>");
+
       // Proses pembuatan data baru menggunakan UserId dari session
-      await Livestock.create({ name, type, price, gender, UserId });
+      await Livestock.create({
+        name,
+        type,
+        price,
+        gender,
+        UserId,
+        imageUrl: imageUrl,
+      });
 
       res.redirect("/stock");
     } catch (error) {
@@ -250,13 +269,13 @@ class Controller {
         );
       }
 
-      // 1. Cari data ternaknya untuk mengambil data harga (price)
+      // Cari data ternaknya untuk mengambil data harga (price)
       const animal = await Livestock.findByPk(id);
       if (!animal) {
         return res.send("Data ternak tidak ditemukan!");
       }
 
-      // 2. Masukkan data ke tabel junction Transactions (Many-to-Many)
+      // Masukkan data ke tabel junction Transactions (Many-to-Many)
       await Transaction.create({
         UserId: buyerId, // ID Pembeli dinamis dari session
         LivestockId: animal.id, // ID Ternak yang dibeli
@@ -264,10 +283,9 @@ class Controller {
         receiptNumber: `REC-${Date.now()}`, // Membuat nomor resi unik otomatis menggunakan timestamp
       });
 
-      // 3. Update status livestock menjadi 'Terjual' agar tidak muncul lagi di list stok tersedia
+      // Update status livestock menjadi 'Terjual' agar tidak muncul lagi di list stok tersedia
       await animal.update({ status: "Terjual" });
 
-      // 4. Setelah sukses transaksi, kembalikan user ke halaman utama stok
       res.redirect("/stock");
     } catch (error) {
       console.log(error);
@@ -299,11 +317,10 @@ class Controller {
     try {
       const { id } = req.params; // ID ternak yang akan dihapus
 
-      // Menggunakan PROMISE CHAINING (Tanpa async/await)
+      // Menggunakan PROMISE CHAINING
       Livestock.destroy({
         where: { id },
       }).then(() => {
-        // Jika proses delete berhasil, oper pesan sukses lewat query string menuju halaman /stock
         res.redirect(
           "/stock?notification=Hewan ternak berhasil dihapus dari sistem!",
         );
@@ -317,7 +334,7 @@ class Controller {
   // history transaksi
   static async transactionHistory(req, res) {
     try {
-      // 1. Ambil ID user yang sedang login dari session
+      // Ambil ID user yang sedang login dari session
       const buyerId = req.session.userId;
       const userRole = req.session.userRole;
 
@@ -326,14 +343,13 @@ class Controller {
         return res.redirect("/login?error=Silakan login terlebih dahulu!");
       }
 
-      // Proteksi Tambahan: Hanya Pembeli yang punya riwayat pembelian di halaman ini
       if (userRole === "Seller") {
         return res.redirect(
           "/stock?notification=Akses ditolak! Halaman riwayat pembelian hanya untuk akun Pembeli.",
         );
       }
 
-      // 2. Query ke tabel Transaction dengan Eager Loading ke model Livestock
+      // Query ke tabel Transaction dengan Eager Loading ke model Livestock
       const transactions = await Transaction.findAll({
         where: { UserId: buyerId },
         include: {
@@ -396,7 +412,6 @@ class Controller {
         order: [["id", "ASC"]],
       });
 
-      // Render ke halaman view baru (sellerDashboard.ejs)
       res.render("sellerDashboard", { myStocks });
     } catch (error) {
       console.log(error);

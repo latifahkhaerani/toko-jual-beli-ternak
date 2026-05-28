@@ -49,6 +49,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 60px;">No.</th>
+                                <th>Foto Hewan Ternak</th>
                                 <th>Nama Ternak</th>
                                 <th>Jenis</th>
                                 <th>Jenis Kelamin</th>
@@ -70,6 +71,16 @@
                                         <tr>
                                             <td class="fw-bold">
                                                 <%= index + 1 %>
+                                            </td>
+                                            <td>
+                                                <% if (animal.imageUrl) { %>
+                                                    <img src="<%= animal.imageUrl %>" alt="Foto Ternak"
+                                                        style="width: 100px; height: 80px; object-fit: cover; border-radius: 5px; border: 1px solid #ccc;">
+                                                    <% } else { %>
+                                                        <span
+                                                            style="color: gray; font-style: italic; font-size: 12px;">Tidak
+                                                            ada foto</span>
+                                                        <% } %>
                                             </td>
                                             <td class="fw-bold text-uppercase">
                                                 <%= animal.name %>

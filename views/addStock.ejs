@@ -257,7 +257,7 @@
                         </div>
                         <% } %>
 
-                            <form action="/stock/add" method="POST">
+                            <form action="/stock/add" method="POST" enctype="multipart/form-data">
 
                                 <div class="mb-4">
                                     <label class="neo-label">Nama Ternak / Label:</label>
@@ -303,6 +303,11 @@
                                     <button type="submit"
                                         class="btn btn-neo-group btn-neo-save order-1 order-sm-2">Simpan ke
                                         Kandang</button>
+                                </div>
+
+                                <div d-flex flex-column flex-sm-row gap-3 justify-content-end>
+                                    <label>Foto Fisik Hewan Ternak:</label><br>
+                                    <input type="file" name="image" accept="image/*" required>
                                 </div>
 
                             </form>
