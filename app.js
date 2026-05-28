@@ -35,7 +35,7 @@ app.get("/stock", Controller.getStock);
 app.get("/stock/add", Controller.formAdd);
 app.post("/stock/add", Controller.addStock);
 app.get("/stock/buy/:id", Controller.buy);
-app.get("/products", Controller.productDetail); // perbaiki tambah id
+app.get("/products/", Controller.productDetail); // perbaiki tambah id
 app.get("/stock/delete/:id", Controller.deleteStock);
 app.get("/transactions/history", Controller.transactionHistory);
 app.get("/seller/dashboard", Controller.sellerDashboard);

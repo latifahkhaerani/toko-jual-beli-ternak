@@ -1,3 +1,4 @@
+const { where } = require("sequelize");
 const {
   Livestock,
   UserProfile,
@@ -9,7 +10,20 @@ class Controller {
   // Home => tampilan utama
   static async home(req, res) {
     try {
-      res.render("home");
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+
+      res.render("home", {
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
     } catch (error) {
       console.log(error);
       res.send(error);
@@ -83,7 +97,7 @@ class Controller {
     try {
       req.session.destroy((err) => {
         if (err) return res.send(err.message);
-        res.redirect("/login");
+        res.redirect("/");
       });
     } catch (error) {
       console.log(error);
@@ -232,13 +246,13 @@ class Controller {
   }
   static async productDetail(req, res) {
     try {
-      
       res.render("productDetail");
     } catch (error) {
       console.log(error);
       res.send(error);
     }
   }
+
   static async deleteStock(req, res) {
     try {
       const { id } = req.params; // ID ternak yang akan dihapus
