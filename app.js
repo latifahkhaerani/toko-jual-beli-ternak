@@ -1,4 +1,4 @@
-// testing 
+// testing
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -30,10 +30,12 @@ app.post("/register", Controller.register);
 app.get("/login", Controller.formLogin);
 app.post("/login", Controller.login);
 app.get("/logout", Controller.logout);
+app.get("/cart", Controller.cart);
 app.get("/stock", Controller.getStock);
 app.get("/stock/add", Controller.formAdd);
 app.post("/stock/add", Controller.addStock);
 app.get("/stock/buy/:id", Controller.buy);
+app.get("/products", Controller.productDetail); // perbaiki tambah id
 app.get("/stock/delete/:id", Controller.deleteStock);
 app.get("/transactions/history", Controller.transactionHistory);
 app.get("/seller/dashboard", Controller.sellerDashboard);

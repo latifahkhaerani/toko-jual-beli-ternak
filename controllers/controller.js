@@ -90,6 +90,15 @@ class Controller {
       res.send(error);
     }
   }
+  // cart
+  static async cart(req, res) {
+    try {
+      res.render("cart");
+    } catch (error) {
+      console.log(error);
+      res.send(error);
+    }
+  }
 
   // stock
   static async getStock(req, res) {
@@ -216,6 +225,15 @@ class Controller {
 
       // 4. Setelah sukses transaksi, kembalikan user ke halaman utama stok
       res.redirect("/stock");
+    } catch (error) {
+      console.log(error);
+      res.send(error);
+    }
+  }
+  static async productDetail(req, res) {
+    try {
+      
+      res.render("productDetail");
     } catch (error) {
       console.log(error);
       res.send(error);
