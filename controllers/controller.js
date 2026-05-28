@@ -19,10 +19,11 @@ class Controller {
           include: UserProfile,
         });
       }
-
+      
 
       // list product
       
+
       res.render("home", {
         userRole: req.session.userRole,
         isLogin: req.session.userId,
@@ -262,7 +263,19 @@ class Controller {
   }
   static async productDetail(req, res) {
     try {
-      res.render("productDetail");
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+      res.render("productDetail", {
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
     } catch (error) {
       console.log(error);
       res.send(error);
