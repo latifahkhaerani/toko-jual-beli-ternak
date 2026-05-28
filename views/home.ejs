@@ -29,34 +29,53 @@
       <!-- CARD SECTION -->
       <div class="row mt-5 g-4">
         <!-- CARD 1 -->
-        <div class="col-lg-3 col-md-6">
-          <div class="card neo-card">
-            <img
-              src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=1200&auto=format&fit=crop"
-              alt="Ayam"
-            />
+         <% products.forEach(p => { %>
+          <div class="col-lg-3 col-md-6">
+            <div class="card neo-card">
+              <img
+                src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=1200&auto=format&fit=crop"
+                alt="Ayam"
+              />
+  
+              <div class="card-body">
+                <%
+                  let tagClass = '';
 
-            <div class="card-body">
-              <span class="animal-tag tag-yellow">AYAM PEDAGING</span>
+                  if (p.type === 'Domba') {
+                    tagClass = 'tag-yellow';
+                  } else if (p.type === 'Sapi') {
+                    tagClass = 'tag-pink';
+                  } else {
+                    tagClass = 'tag-blue';
+                  }
+                %>
 
-              <h5 class="card-title">Ayam Broiler Premium</h5>
-
-              <p>
-                Ayam sehat dengan kualitas terbaik untuk kebutuhan ternak
-                modern.
-              </p>
-
-              <div
-                class="d-flex justify-content-between align-items-center mb-3"
-              >
-                <span class="price">Rp120K</span>
-                <span class="fw-bold">⭐ 4.9</span>
+                <span class="animal-tag <%= tagClass %>">
+                  <%= p.type %>
+                </span>
+  
+                <h5 class="card-title"><%= p.name %></h5>
+  
+                <p>
+                  Ayam sehat dengan kualitas terbaik untuk kebutuhan ternak
+                  modern.
+                </p>
+  
+                <div
+                  class="d-flex justify-content-between align-items-center mb-3"
+                >
+                  <span class="price"><%= formatRupiah(p.price) %></span>
+                  
+                </div>
+  
+                <button class="btn-buy">
+                  <a href="/stock"></a>
+                  ADD TO CART</button>
               </div>
-
-              <button class="btn-buy">BELI SEKARANG</button>
             </div>
           </div>
-        </div>
+          
+         <% }); %>
 
         <!-- CARD 2 -->
         <!-- <div class="col-lg-3 col-md-6">

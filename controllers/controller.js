@@ -19,15 +19,28 @@ class Controller {
           include: UserProfile,
         });
       }
-      
 
       // list product
-      
+      if (req.session.userRole === "Seller") {
+        let products = await Livestock.findAll({
+          include: User,
+          where: { id: req.session.userId },
+        });
+        return res.render("home", {
+          userRole: req.session.userRole,
+          isLogin: req.session.userId,
+          user,
+          products,
+        });
+      }
+
+      let products = await Livestock.findAll({});
 
       res.render("home", {
         userRole: req.session.userRole,
         isLogin: req.session.userId,
         user,
+        products,
       });
     } catch (error) {
       console.log(error);
