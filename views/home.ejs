@@ -1,165 +1,377 @@
 <!DOCTYPE html>
 <html lang="id">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sayap Cinta Farm - Neobrutalism Navbar</title>
+
     <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts: Space Grotesk (Sangat cocok untuk tema Neobrutalisme) -->
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
 
     <style>
-        :root {
-            --bg-color: #f4f1de;
-            /* Warna background halaman khas koran kuno/mentah */
-            --primary-yellow: #ffde4d;
-            /* Kuning terang khas neobrutalisme */
-            --accent-pink: #ff6b6b;
-            /* Warna pink/merah pop */
-            --dark-border: #1a1a1a;
-            /* Border hitam pekat */
+      :root {
+        --bg-color: #f4f1de;
+        --primary-yellow: #ffde4d;
+        --accent-pink: #ff6b6b;
+        --accent-green: #80ed99;
+        --accent-blue: #64b5f6;
+        --dark-border: #1a1a1a;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        font-family: "Space Grotesk", sans-serif;
+        padding: 20px;
+      }
+
+      /* ================= NAVBAR ================= */
+
+      .neo-navbar {
+        background-color: #ffffff;
+        border: 4px solid var(--dark-border);
+        box-shadow: 8px 8px 0px 0px var(--dark-border);
+        padding: 15px 25px;
+        border-radius: 0px;
+
+        transform: translateY(-50px);
+        opacity: 0;
+        animation: slideInDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+          forwards;
+      }
+
+      .neo-brand {
+        font-weight: 700;
+        font-size: 1.6rem;
+        color: var(--dark-border) !important;
+        text-transform: uppercase;
+        letter-spacing: -1px;
+        padding: 5px 10px;
+        border: 3px solid transparent;
+        transition: all 0.2s ease;
+      }
+
+      .neo-brand:hover {
+        background-color: var(--accent-pink);
+        border-color: var(--dark-border);
+        transform: rotate(-2deg) scale(1.05);
+        box-shadow: 4px 4px 0px var(--dark-border);
+      }
+
+      .btn-neo {
+        font-weight: 700;
+        text-transform: uppercase;
+        border: 3px solid var(--dark-border) !important;
+        border-radius: 0px !important;
+        padding: 8px 20px !important;
+        transition: all 0.15s ease;
+      }
+
+      .btn-neo-login {
+        background-color: #ffffff;
+        color: var(--dark-border);
+        margin-right: 15px;
+        box-shadow: 4px 4px 0px var(--dark-border);
+      }
+
+      .btn-neo-login:hover {
+        background-color: var(--dark-border);
+        color: #ffffff;
+        transform: translate(-2px, -2px);
+        box-shadow: 6px 6px 0px var(--dark-border);
+      }
+
+      .btn-neo-register {
+        background-color: var(--primary-yellow);
+        color: var(--dark-border);
+        box-shadow: 4px 4px 0px var(--dark-border);
+      }
+
+      .btn-neo-register:hover {
+        background-color: #ffffff;
+        transform: translate(-4px, -4px) rotate(1deg);
+        box-shadow: 8px 8px 0px var(--dark-border);
+      }
+
+      /* ================= HERO ================= */
+
+      .hero-box {
+        border: 4px solid var(--dark-border);
+        background: #fff;
+        box-shadow: 8px 8px 0px var(--dark-border);
+      }
+
+      /* ================= CARD ================= */
+
+      .neo-card {
+        border: 4px solid var(--dark-border);
+        border-radius: 0;
+        overflow: hidden;
+        background: white;
+        box-shadow: 8px 8px 0px var(--dark-border);
+        transition: all 0.2s ease;
+        height: 100%;
+      }
+
+      .neo-card:hover {
+        transform: translate(-6px, -6px) rotate(-1deg);
+        box-shadow: 14px 14px 0px var(--dark-border);
+      }
+
+      .neo-card img {
+        height: 220px;
+        object-fit: cover;
+        border-bottom: 4px solid var(--dark-border);
+      }
+
+      .card-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+      }
+
+      .animal-tag {
+        display: inline-block;
+        padding: 6px 12px;
+        border: 3px solid var(--dark-border);
+        font-size: 0.8rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+      }
+
+      .tag-yellow {
+        background: var(--primary-yellow);
+      }
+
+      .tag-pink {
+        background: var(--accent-pink);
+      }
+
+      .tag-green {
+        background: var(--accent-green);
+      }
+
+      .tag-blue {
+        background: var(--accent-blue);
+      }
+
+      .price {
+        font-size: 1.4rem;
+        font-weight: 700;
+      }
+
+      .btn-buy {
+        width: 100%;
+        border: 3px solid var(--dark-border);
+        border-radius: 0;
+        background: var(--primary-yellow);
+        font-weight: 700;
+        padding: 10px;
+        box-shadow: 4px 4px 0px var(--dark-border);
+        transition: all 0.15s ease;
+      }
+
+      .btn-buy:hover {
+        transform: translate(-3px, -3px);
+        background: var(--accent-pink);
+        box-shadow: 7px 7px 0px var(--dark-border);
+      }
+
+      .btn-buy:active {
+        transform: translate(3px, 3px);
+        box-shadow: 0px 0px 0px var(--dark-border);
+      }
+
+      /* ================= ANIMATION ================= */
+
+      @keyframes slideInDown {
+        0% {
+          transform: translateY(-60px) scale(0.95);
+          opacity: 0;
         }
 
-        body {
-            background-color: var(--bg-color);
-            font-family: 'Space Grotesk', sans-serif;
-            padding: 20px;
+        100% {
+          transform: translateY(0) scale(1);
+          opacity: 1;
         }
-
-        /* --- NEOBRUTALISM NAVBAR STYLE --- */
-        .neo-navbar {
-            background-color: #ffffff;
-            border: 4px solid var(--dark-border);
-            /* Hard shadow tanpa blur */
-            box-shadow: 8px 8px 0px 0px var(--dark-border);
-            padding: 15px 25px;
-            border-radius: 0px;
-            /* Neobrutalisme menghindari rounded corner yang halus */
-
-            /* Animasi masuk saat page load */
-            transform: translateY(-50px);
-            opacity: 0;
-            animation: slideInDown 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
-        /* Logo Brand */
-        .neo-brand {
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: var(--dark-border) !important;
-            text-transform: uppercase;
-            letter-spacing: -1px;
-            padding: 5px 10px;
-            border: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        /* Animasi hover pada Logo */
-        .neo-brand:hover {
-            background-color: var(--accent-pink);
-            border-color: var(--dark-border);
-            transform: rotate(-2deg) scale(1.05);
-            box-shadow: 4px 4px 0px var(--dark-border);
-        }
-
-        /* Tombol Auth Umum */
-        .btn-neo {
-            font-weight: 700;
-            text-transform: uppercase;
-            border: 3px solid var(--dark-border) !important;
-            border-radius: 0px !important;
-            padding: 8px 20px !important;
-            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-        }
-
-        /* Variasi Tombol Login (Putih) */
-        .btn-neo-login {
-            background-color: #ffffff;
-            color: var(--dark-border);
-            margin-right: 15px;
-            box-shadow: 4px 4px 0px var(--dark-border);
-        }
-
-        .btn-neo-login:hover {
-            background-color: var(--dark-border);
-            color: #ffffff;
-            transform: translate(-2px, -2px);
-            box-shadow: 6px 6px 0px var(--dark-border);
-        }
-
-        .btn-neo-login:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0px 0px 0px var(--dark-border);
-        }
-
-        /* Variasi Tombol Register (Kuning Menyala) */
-        .btn-neo-register {
-            background-color: var(--primary-yellow);
-            color: var(--dark-border);
-            box-shadow: 4px 4px 0px var(--dark-border);
-        }
-
-        .btn-neo-register:hover {
-            background-color: #ffffff;
-            transform: translate(-4px, -4px) rotate(1deg);
-            box-shadow: 8px 8px 0px var(--dark-border);
-        }
-
-        .btn-neo-register:active {
-            transform: translate(4px, 4px);
-            box-shadow: 0px 0px 0px var(--dark-border);
-        }
-
-        /* --- KEYFRAMES ANIMATION --- */
-        @keyframes slideInDown {
-            0% {
-                transform: translateY(-60px) scale(0.95);
-                opacity: 0;
-            }
-
-            100% {
-                transform: translateY(0) scale(1);
-                opacity: 1;
-            }
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
-
+  <body>
     <div class="container mt-3">
-        <!-- Navbar Start -->
-        <nav class="navbar neo-navbar">
-            <div class="container-fluid d-flex justify-content-between align-items-center">
+      <!-- NAVBAR -->
+      <nav class="navbar neo-navbar">
+        <div
+          class="d-flex align-items-center w-100"
+        >
+          <a class="navbar-brand neo-brand" href="#"> Logo </a>
 
-                <!-- Kiri: Logo Tulisan -->
-                <a class="navbar-brand neo-brand" href="#">
-                    Sayap Cinta Farm
-                </a>
+          <!-- SEARCH BAR -->
+          <div class="d-flex flex-grow-1">
+            <form class="neo-search w-100" style="max-width: 700px">
+              <div class="input-group">
+                <input
+                  type="text"
+                  class="form-control neo-input"
+                  placeholder="Cari ternak... ayam, kambing, sapi..."
+                />
 
-                <!-- Kanan: Login & Register -->
-                <div class="d-flex auth-buttons">
-                    <a href="/login" class="btn btn-neo btn-neo-login">Login</a>
-                    <a href="/register" class="btn btn-neo btn-neo-register">Register</a>
-                </div>
+                <button class="btn neo-btn-search" type="submit">
+                  🔍 SEARCH
+                </button>
+              </div>
+            </form>
+          </div>
 
-            </div>
-        </nav>
-        <!-- Navbar End -->
-
-        <!-- Contoh Konten Tambahan Supaya Efeknya Terlihat Sempurna -->
-        <div class="mt-5 p-4 text-center"
-            style="border: 4px solid #1a1a1a; background: #fff; box-shadow: 8px 8px 0 px #1a1a1a;">
-            <h1 class="fw-bold">Selamat Datang di Peternakan Modern</h1>
-            <p>Klik tombol di navbar untuk melihat efek animasi benturan (*spring/pop*) khas Neobrutalisme.</p>
+          <div class="d-flex auth-buttons">
+            <a href="/login" class="btn btn-neo btn-neo-login">Login</a>
+            <a href="/register" class="btn btn-neo btn-neo-register"
+              >Register</a
+            >
+          </div>
         </div>
+      </nav>
+
+      <!-- HERO -->
+      <div class="mt-5 p-4 text-center hero-box">
+        <h1 class="fw-bold">Marketplace Ternak Modern 🐓</h1>
+        <p>
+          Pilih ternak terbaik langsung dari peternakan terpercaya dengan gaya
+          neobrutalism yang nyentrik.
+        </p>
+      </div>
+
+      <!-- CARD SECTION -->
+      <div class="row mt-5 g-4">
+        <!-- CARD 1 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card neo-card">
+            <img
+              src="https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?q=80&w=1200&auto=format&fit=crop"
+              alt="Ayam"
+            />
+
+            <div class="card-body">
+              <span class="animal-tag tag-yellow">AYAM PEDAGING</span>
+
+              <h5 class="card-title">Ayam Broiler Premium</h5>
+
+              <p>
+                Ayam sehat dengan kualitas terbaik untuk kebutuhan ternak
+                modern.
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <span class="price">Rp120K</span>
+                <span class="fw-bold">⭐ 4.9</span>
+              </div>
+
+              <button class="btn-buy">BELI SEKARANG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card neo-card">
+            <img
+              src="https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=1200&auto=format&fit=crop"
+              alt="Kambing"
+            />
+
+            <div class="card-body">
+              <span class="animal-tag tag-pink">KAMBING</span>
+
+              <h5 class="card-title">Kambing Etawa</h5>
+
+              <p>
+                Cocok untuk susu maupun ternak harian dengan kualitas unggulan.
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <span class="price">Rp2.5JT</span>
+                <span class="fw-bold">⭐ 4.8</span>
+              </div>
+
+              <button class="btn-buy">BELI SEKARANG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card neo-card">
+            <img
+              src="https://images.unsplash.com/photo-1500595046743-cd271d694d30?q=80&w=1200&auto=format&fit=crop"
+              alt="Sapi"
+            />
+
+            <div class="card-body">
+              <span class="animal-tag tag-green">SAPI</span>
+
+              <h5 class="card-title">Sapi Limousin</h5>
+
+              <p>
+                Sapi premium dengan bobot besar dan kualitas daging terbaik.
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <span class="price">Rp18JT</span>
+                <span class="fw-bold">⭐ 5.0</span>
+              </div>
+
+              <button class="btn-buy">BELI SEKARANG</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="col-lg-3 col-md-6">
+          <div class="card neo-card">
+            <img
+              src="https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=1200&auto=format&fit=crop"
+              alt="Bebek"
+            />
+
+            <div class="card-body">
+              <span class="animal-tag tag-blue">BEBEK</span>
+
+              <h5 class="card-title">Bebek Petelur</h5>
+
+              <p>
+                Bebek produktif dengan hasil telur berkualitas tinggi setiap
+                hari.
+              </p>
+
+              <div
+                class="d-flex justify-content-between align-items-center mb-3"
+              >
+                <span class="price">Rp350K</span>
+                <span class="fw-bold">⭐ 4.7</span>
+              </div>
+
+              <button class="btn-buy">BELI SEKARANG</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
+  </body>
 </html>
