@@ -10,6 +10,7 @@ class Controller {
   // Home => tampilan utama
   static async home(req, res) {
     try {
+      // navbar
       let user = null;
 
       if (req.session.userId) {
@@ -19,6 +20,9 @@ class Controller {
         });
       }
 
+
+      // list product
+      
       res.render("home", {
         userRole: req.session.userRole,
         isLogin: req.session.userId,
@@ -143,10 +147,22 @@ class Controller {
       const livestocks = await Livestock.getAvailableLivestocks(options);
 
       // 5. Kirim data ke file ejs (misal nama filenya: stockList.ejs)
+
+      // navbar
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
       res.render("stock", {
         livestocks,
         notification,
         userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
       });
     } catch (error) {
       console.log(error);
@@ -300,8 +316,22 @@ class Controller {
         order: [["createdAt", "DESC"]], // Menampilkan transaksi terbaru di atas
       });
 
+      // navbar
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
       // 3. Render ke halaman view baru (misal: transactionHistory.ejs)
-      res.render("transactionHistory", { transactions });
+      res.render("transactionHistory", {
+        transactions,
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
     } catch (error) {
       res.send(error);
     }
