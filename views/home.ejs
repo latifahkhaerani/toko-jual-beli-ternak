@@ -67,10 +67,18 @@
                   <span class="price"><%= formatRupiah(p.price) %></span>
                   
                 </div>
-  
-                <button class="btn-buy">
-                  <a href="/stock"></a>
-                  ADD TO CART</button>
+                
+                <% if (userRole==='Seller') {%>
+                       <button class="btn-buy">
+                    <a style="text-decoration: none; color:black" href="/stock">LIHAT DAFTAR TERNAK</a>
+                    </button>
+
+                <% } else {  %>
+                  <button class="btn-buy">
+                    <a style="text-decoration: none; color:black" href="/stock">ADD TO CART</a>
+                    </button>
+                <% } %>
+
               </div>
             </div>
           </div>
