@@ -4,6 +4,7 @@ const {
   User,
   Transaction,
 } = require("../models/index");
+const bcrypt = require("bcryptjs");
 
 class Controller {
   // Home => tampilan utama
@@ -164,8 +165,23 @@ class Controller {
         );
       }
 
+      // ambil naam file dari multer jika ada file yang di unggah
+      let imageUrl = null;
+      if (req.file) {
+        imageUrl = `/uploads/${req.file.filename}`;
+      }
+      console.log(req.file);
+      console.log(imageUrl, "=========>");
+
       // Proses pembuatan data baru menggunakan UserId dari session
-      await Livestock.create({ name, type, price, gender, UserId });
+      await Livestock.create({
+        name,
+        type,
+        price,
+        gender,
+        UserId,
+        imageUrl: imageUrl,
+      });
 
       res.redirect("/stock");
     } catch (error) {

@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       return this.findAll(options);
     }
 
-    // 3. GETTER: Membuat label kode kustom (contoh: "SAPI-1")
+    // Membuat label kode kustom (misalnya itu = "SAPI-1")
     get animalCode() {
       return `${this.type.toUpperCase()}-${this.id}`;
     }
@@ -73,6 +73,7 @@ module.exports = (sequelize, DataTypes) => {
       status: DataTypes.STRING,
       UserId: DataTypes.INTEGER,
       gender: DataTypes.STRING,
+      imageUrl: DataTypes.STRING,
     },
     {
       sequelize,
@@ -88,6 +89,8 @@ module.exports = (sequelize, DataTypes) => {
           if (livestock.name) {
             livestock.name = livestock.name.toUpperCase();
           }
+
+          livestock.imageUrl = `http://localhost:3000/${livestock.imageUrl}`;
         },
       },
     },
