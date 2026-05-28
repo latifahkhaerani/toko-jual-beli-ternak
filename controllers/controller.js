@@ -62,16 +62,19 @@ class Controller {
       // cari usernya melalui email
       const user = await User.findOne({ where: { email } });
 
-      // validasi kalau usernya gak ada atau passwordnya ga ada
-      if (!user || user.password !== password) {
-        return res.send("Email atau password salah!");
+      if (user) {
+        const passwordBcrypt = bcrypt.compareSync(password, user.password); // Membandingkan teks vs hash
+
+        if (passwordBcrypt) {
+          // Jika cocok, set session login seperti biasa
+          req.session.userId = user.id;
+          req.session.userRole = user.role;
+
+          return res.redirect("/stock");
+        }
       }
 
-      //  biar dinamis sewaktu login menggunakan build in func session
-      req.session.userId = user.id;
-      req.session.userRole = user.role;
-
-      res.redirect("/");
+      return res.send("Email atau Password Salah");
     } catch (error) {
       console.log(error);
       res.send(error);
