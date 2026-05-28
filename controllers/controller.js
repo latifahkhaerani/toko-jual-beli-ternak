@@ -25,7 +25,7 @@ class Controller {
       if (req.session.userRole === "Seller") {
         let products = await Livestock.findAll({
           include: User,
-          where: { id: req.session.userId },
+          where: { UserId: req.session.userId },
         });
         return res.render("home", {
           userRole: req.session.userRole,
