@@ -28,6 +28,11 @@
 
       <!-- CARD SECTION -->
       <div class="row mt-5 g-4">
+        
+        <% if (userRole === 'Seller'  && products.length === 0) { %>
+         <a href="/stock/add" class="btn-neo-action btn-add-ternak d-flex justify-content-center"> + Tambah Hewan Ternak Baru</a>
+        <% } %>
+         
         <!-- CARD 1 -->
          <% products.forEach(p => { %>
           <div class="col-lg-3 col-md-6">
