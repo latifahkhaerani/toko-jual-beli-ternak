@@ -3,20 +3,17 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    // 1. Masukkan data ke tabel Users terlebih dahulu
     await queryInterface.bulkInsert(
       "Users",
       [
         {
-          id: 1,
           email: "peternak@moomart.com",
-          password: "password123", // Di real application nanti pakai bcrypt, untuk simulasi ini string biasa dulu aman
+          password: "password123",
           role: "Peternak",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          id: 2,
           email: "pembeli@gmail.com",
           password: "password123",
           role: "Pembeli",
@@ -27,7 +24,6 @@ module.exports = {
       {},
     );
 
-    // 2. Masukkan data ke tabel UserProfiles dengan UserId yang cocok
     await queryInterface.bulkInsert(
       "UserProfiles",
       [
@@ -35,7 +31,7 @@ module.exports = {
           fullName: "Pak Eko Peternak Jaya",
           phoneNumber: "081234567890",
           address: "Banda Aceh",
-          UserId: 1, // Menyambung ke id 1
+          UserId: 1, // Menyambung ke id 1 di sesuaikan id nya
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -53,7 +49,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    // Menghapus data seeder jika di-undo (db:seed:undo) dengan urutan terbalik
     await queryInterface.bulkDelete("UserProfiles", null, {});
     await queryInterface.bulkDelete("Users", null, {});
   },
