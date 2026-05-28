@@ -1,4 +1,3 @@
-// testing
 const express = require("express");
 const app = express();
 const port = 3000;
@@ -7,14 +6,11 @@ const Controller = require("./controllers/controller");
 // import sesion nya
 const session = require("express-session");
 
-// di buat local aja helper yang udah di buat
 const { formatRupiah } = require("./helpers/rupiah");
 
-// utility multernya untuk menangani file upload gambar nya
 const multer = require("multer");
 const path = require("path");
 
-// Atur lokasi penyimpanan dan nama file kustom
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "./public/uploads");
@@ -42,10 +38,10 @@ app.use(
 
 app.use(
   session({
-    secret: "sayapBerkasih", // kunci bebas
+    secret: "sayapBerkasih",
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false }, // set true jika menggunakan HTTPS
+    cookie: { secure: false },
   }),
 );
 
@@ -65,12 +61,16 @@ app.post("/login", Controller.login);
 app.get("/logout", Controller.logout);
 app.get("/stock", isLoggedIn, Controller.getStock);
 app.get("/stock/add", isLoggedIn, Controller.formAdd);
+app.get("/transactions/history", isLoggedIn, Controller.transactionHistory);
+app.get("/seller/dashboard", isLoggedIn, Controller.sellerDashboard);
 app.post("/stock/add", isLoggedIn, upload.single("image"), Controller.addStock);
 app.get("/stock/buy/:id", isLoggedIn, Controller.buy);
 app.get("/stock/delete/:id", isLoggedIn, Controller.deleteStock);
-app.get("/transactions/history", isLoggedIn, Controller.transactionHistory);
-app.get("/seller/dashboard", isLoggedIn, Controller.sellerDashboard);
+
+app.get("/stock/edit/:id", Controller.formEdit);
+
+app.post("/stock/edit/:id", upload.single("image"), Controller.updateStock);
 
 app.listen(port, () => {
-  console.log(`I <3 ${port} More`);
+  console.log(`I <3 More ${port}`);
 });

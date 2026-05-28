@@ -1,4 +1,4 @@
-const { where } = require("sequelize");
+const { where, Op } = require("sequelize");
 const {
   Livestock,
   UserProfile,
@@ -6,6 +6,7 @@ const {
   Transaction,
 } = require("../models/index");
 
+const bcrypt = require("bcryptjs");
 class Controller {
   // Home => tampilan utama
   static async home(req, res) {
@@ -51,12 +52,16 @@ class Controller {
   // Registernya get dan post
   static async formRegister(req, res) {
     try {
-      res.render("register");
+      res.render("register", {
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+      });
     } catch (error) {
       console.log(error);
       res.send(error);
     }
   }
+
   static async register(req, res) {
     try {
       const { email, password, role, fullName, phoneNumber } = req.body;
@@ -81,7 +86,10 @@ class Controller {
   // Login get dan postnya
   static async formLogin(req, res) {
     try {
-      res.render("login");
+      res.render("login", {
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+      });
     } catch (error) {
       console.log(error);
       res.send(error);
@@ -95,11 +103,16 @@ class Controller {
       const user = await User.findOne({ where: { email } });
 
       // validasi kalau usernya gak ada atau passwordnya ga ada
-      if (!user || user.password !== password) {
+      if (!user) {
         return res.send("Email atau password salah!");
       }
 
-      //  biar dinamis sewaktu login menggunakan build in func session
+      const isValidPassword = bcrypt.compareSync(password, user.password);
+
+      if (!isValidPassword) {
+        return res.send("Email atau password salah!");
+      }
+
       req.session.userId = user.id;
       req.session.userRole = user.role;
 
@@ -123,54 +136,63 @@ class Controller {
     }
   }
   // cart
-  static async cart(req, res) {
-    try {
-      res.render("cart");
-    } catch (error) {
-      console.log(error);
-      res.send(error);
-    }
-  }
+  // static async cart(req, res) {
+  //   try {
+  //     res.render("cart");
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.send(error);
+  //   }
+  // }
 
   // stock
   static async getStock(req, res) {
     try {
-      // 1. Ambil query parameter untuk fitur Search/Filter dan notification
+      // kita ambil search dan notifikasinya
       const { search, notification } = req.query;
 
-      // 2. Siapkan konfigurasi Eager Loading dasar
+      // buat konfigurasi Eager Loading dasar
       let options = {
         include: {
           model: User,
           include: {
-            model: UserProfile, // Nested Eager Loading untuk mengambil nama lengkap Peternak
+            model: UserProfile, // Nested Eager Loading untuk mengambil nama lengkap Seller
           },
         },
         order: [["id", "ASC"]], // Mengurutkan berdasarkan ID terkecil secara default
       };
-      // 3. Jika user mengetik sesuatu di kolom search, gunakan Operator Sequelize (Op.iLike atau Op.like)
-      if (search) {
-        options.where = {
-          type: {
-            [Op.iLike]: `%${search}%`, // iLike digunakan agar tidak case-sensitive (PostgreSQL cocok sekali)
-          },
-        };
-      }
 
-      // 4. Panggil Static Method yang sudah kita buat di model Livestock
-      const livestocks = await Livestock.getAvailableLivestocks(options);
-
-      // 5. Kirim data ke file ejs (misal nama filenya: stockList.ejs)
-
-      // navbar
       let user = null;
-
       if (req.session.userId) {
         user = await User.findOne({
           where: { id: req.session.userId },
           include: UserProfile,
         });
       }
+
+      if (search) {
+        options.where = {
+          type: {
+            [Op.iLike]: `%${search}%`,
+          },
+        };
+      }
+
+      if (req.session.userRole === "Seller") {
+        options.where = {
+          ...options.where,
+          UserId: req.session.userId,
+        };
+      } else {
+        options.where = {
+          ...options.where,
+          status: "Tersedia",
+        };
+      }
+
+      // Panggil Static Method yang sudah kita buat di model Livestock
+      const livestocks = await Livestock.getAvailableLivestocks(options);
+
       res.render("stock", {
         livestocks,
         notification,
@@ -194,9 +216,22 @@ class Controller {
         );
       }
 
-      // Ambil pesan error dari query parameter jika ada
+      let user = null;
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+
       const { errors } = req.query;
-      res.render("addStock", { errors });
+
+      res.render("addStock", {
+        errors,
+        userRole: req.session.userRole,
+        isLogin: req.session.userId ? true : false,
+        user,
+      });
     } catch (error) {
       console.log(error);
       res.send(error);
@@ -204,9 +239,8 @@ class Controller {
   }
   static async addStock(req, res) {
     try {
-      const { name, type, price, gender } = req.body;
+      const { name, type, price, description, gender } = req.body;
 
-      // DINAMIS: Ambil ID dari peternak yang sedang login melalui session
       const UserId = req.session.userId;
 
       if (!UserId) {
@@ -215,8 +249,23 @@ class Controller {
         );
       }
 
-      // Proses pembuatan data baru menggunakan UserId dari session
-      await Livestock.create({ name, type, price, gender, UserId });
+      // ambil naam file dari multer jika ada file yang di unggah
+      let imageUrl = null;
+      if (req.file) {
+        imageUrl = `/uploads/${req.file.filename}`;
+      }
+      console.log(req.file);
+      console.log(imageUrl, "=========>");
+
+      await Livestock.create({
+        name,
+        type,
+        price,
+        description,
+        gender,
+        UserId,
+        imageUrl: imageUrl,
+      });
 
       res.redirect("/stock");
     } catch (error) {
@@ -230,33 +279,31 @@ class Controller {
       res.send(error.message);
     }
   }
+  // buy
   static async buy(req, res) {
     try {
-      // PROTEKSI: Jika bukan Pembeli, tidak boleh memproses transaksi
       if (req.session.userRole === "Seller") {
         return res.redirect(
           "/stock?notification=Akses ditolak! Hanya akun Pembeli yang dapat melakukan transaksi.",
         );
       }
-      const { id } = req.params; // ID dari hewan ternak yang diklik beli
+      const { id } = req.params;
 
-      // DINAMIS: Ambil ID Pembeli langsung dari session user yang sedang aktif
       const buyerId = req.session.userId;
 
-      // Proteksi jika user mencoba tembak hit route langsung tanpa login
       if (!buyerId) {
         return res.send(
           "Anda harus login terlebih dahulu untuk membeli ternak!",
         );
       }
 
-      // 1. Cari data ternaknya untuk mengambil data harga (price)
+      // Cari data ternaknya untuk mengambil data harga (price)
       const animal = await Livestock.findByPk(id);
       if (!animal) {
         return res.send("Data ternak tidak ditemukan!");
       }
 
-      // 2. Masukkan data ke tabel junction Transactions (Many-to-Many)
+      // Masukkan data ke tabel junction Transactions (Many-to-Many)
       await Transaction.create({
         UserId: buyerId, // ID Pembeli dinamis dari session
         LivestockId: animal.id, // ID Ternak yang dibeli
@@ -264,42 +311,42 @@ class Controller {
         receiptNumber: `REC-${Date.now()}`, // Membuat nomor resi unik otomatis menggunakan timestamp
       });
 
-      // 3. Update status livestock menjadi 'Terjual' agar tidak muncul lagi di list stok tersedia
+      // Update status livestock menjadi 'Terjual' agar tidak muncul lagi di list stok tersedia
       await animal.update({ status: "Terjual" });
 
-      // 4. Setelah sukses transaksi, kembalikan user ke halaman utama stok
-      res.redirect("/stock");
+      // Setelah sukses transaksi, kembalikan user ke halaman utama stok
+      res.redirect("/transactions/history");
     } catch (error) {
       console.log(error);
       res.send(error);
     }
   }
-  static async productDetail(req, res) {
-    try {
-      let user = null;
+  // static async productDetail(req, res) {
+  //   try {
+  //     let user = null;
 
-      if (req.session.userId) {
-        user = await User.findOne({
-          where: { id: req.session.userId },
-          include: UserProfile,
-        });
-      }
-      res.render("productDetail", {
-        userRole: req.session.userRole,
-        isLogin: req.session.userId,
-        user,
-      });
-    } catch (error) {
-      console.log(error);
-      res.send(error);
-    }
-  }
+  //     if (req.session.userId) {
+  //       user = await User.findOne({
+  //         where: { id: req.session.userId },
+  //         include: UserProfile,
+  //       });
+  //     }
+  //     res.render("productDetail", {
+  //       userRole: req.session.userRole,
+  //       isLogin: req.session.userId,
+  //       user,
+  //     });
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.send(error);
+  //   }
+  // }
 
   static async deleteStock(req, res) {
     try {
-      const { id } = req.params; // ID ternak yang akan dihapus
+      const { id } = req.params;
 
-      // Menggunakan PROMISE CHAINING (Tanpa async/await)
+      // Menggunakan PROMISE CHAINING
       Livestock.destroy({
         where: { id },
       }).then(() => {
@@ -317,29 +364,26 @@ class Controller {
   // history transaksi
   static async transactionHistory(req, res) {
     try {
-      // 1. Ambil ID user yang sedang login dari session
       const buyerId = req.session.userId;
       const userRole = req.session.userRole;
 
-      // Proteksi: Pastikan user sudah login
       if (!buyerId) {
         return res.redirect("/login?error=Silakan login terlebih dahulu!");
       }
 
-      // Proteksi Tambahan: Hanya Pembeli yang punya riwayat pembelian di halaman ini
       if (userRole === "Seller") {
         return res.redirect(
           "/stock?notification=Akses ditolak! Halaman riwayat pembelian hanya untuk akun Pembeli.",
         );
       }
 
-      // 2. Query ke tabel Transaction dengan Eager Loading ke model Livestock
+      // Query ke tabel Transaction dengan Eager Loading ke model Livestock
       const transactions = await Transaction.findAll({
         where: { UserId: buyerId },
         include: {
           model: Livestock, // Mengambil data detail ternak yang dibeli
         },
-        order: [["createdAt", "DESC"]], // Menampilkan transaksi terbaru di atas
+        order: [["createdAt", "DESC"]],
       });
 
       // navbar
@@ -351,7 +395,7 @@ class Controller {
           include: UserProfile,
         });
       }
-      // 3. Render ke halaman view baru (misal: transactionHistory.ejs)
+      // Render ke halaman view baru
       res.render("transactionHistory", {
         transactions,
         userRole: req.session.userRole,
@@ -389,16 +433,86 @@ class Controller {
           include: {
             model: User,
             include: {
-              model: UserProfile, // Mengambil profil lengkap pembeli jika ada transaksi
+              model: UserProfile,
             },
           },
         },
         order: [["id", "ASC"]],
       });
 
-      // Render ke halaman view baru (sellerDashboard.ejs)
       res.render("sellerDashboard", { myStocks });
     } catch (error) {
+      console.log(error);
+      res.send(error.message);
+    }
+  }
+
+  // Edit
+  static async formEdit(req, res) {
+    try {
+      const { id } = req.params;
+
+      if (req.session.userRole === "Buyer") {
+        return res.redirect(
+          "/stock?notification=Akses ditolak! Hanya Peternak yang boleh mengedit stok.",
+        );
+      }
+
+      const animal = await Livestock.findByPk(id);
+
+      let user = null;
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+      const { errors } = req.query;
+
+      res.render("editStockForm", {
+        animal,
+        errors,
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send(error.message);
+    }
+  }
+
+  static async updateStock(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, type, price, description, gender } = req.body;
+
+      const animal = await Livestock.findByPk(id);
+
+      let finalImageUrl = animal.imageUrl;
+      if (req.file) {
+        finalImageUrl = `/uploads/${req.file.filename}`;
+      }
+
+      await animal.update({
+        name,
+        type,
+        price,
+        description,
+        gender,
+        imageUrl: finalImageUrl,
+      });
+
+      res.redirect(
+        "/stock?notification=Data hewan ternak berhasil diperbarui!",
+      );
+    } catch (error) {
+      if (error.name === "SequelizeValidationError") {
+        const errMessages = error.errors.map((err) => err.message);
+        return res.redirect(
+          `/stock/edit/${req.params.id}?errors=${encodeURIComponent(JSON.stringify(errMessages))}`,
+        );
+      }
       console.log(error);
       res.send(error.message);
     }

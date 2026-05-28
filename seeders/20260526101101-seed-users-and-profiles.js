@@ -1,9 +1,10 @@
 "use strict";
 
+const bcrypt = require("bcryptjs");
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert(
+    const insertedUsers = await queryInterface.bulkInsert(
       "Users",
       [
         {
@@ -21,7 +22,14 @@ module.exports = {
           updatedAt: new Date(),
         },
       ],
-      {},
+      { returning: true },
+    );
+
+    const lalaUser = insertedUsers.find(
+      (u) => u.email === "lala@lalacantik.com",
+    );
+    const elshadUser = insertedUsers.find(
+      (u) => u.email === "elshad@ganteng.com",
     );
 
     await queryInterface.bulkInsert(
@@ -30,16 +38,16 @@ module.exports = {
         {
           fullName: "Lala Elshad",
           phoneNumber: "081234567890",
-          address: "Banda Aceh",
-          UserId: 1,
+          address: "Makassar",
+          UserId: lalaUser.id,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           fullName: "Elshad Lala",
           phoneNumber: "089876543210",
-          address: "Aceh Besar",
-          UserId: 2,
+          address: "Jakarta Barat",
+          UserId: elshadUser.id,
           createdAt: new Date(),
           updatedAt: new Date(),
         },

@@ -147,82 +147,85 @@
             }
         }
     </style>
+    <%- include('_style') %>
 </head>
 
 <body>
+    <!-- NAVBAR -->
+    <%- include('_navbar') %>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-7 col-lg-6">
 
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-7 col-lg-6">
+                    <!-- Register Card Start -->
+                    <div class="card neo-card">
 
-                <!-- Register Card Start -->
-                <div class="card neo-card">
+                        <!-- Judul Form bergaya Brutalisme -->
+                        <div class="text-center">
+                            <h2 class="form-title">Daftar Akun Baru</h2>
+                        </div>
 
-                    <!-- Judul Form bergaya Brutalisme -->
-                    <div class="text-center">
-                        <h2 class="form-title">Daftar Akun Baru</h2>
+                        <form action="/register" method="POST">
+
+                            <!-- Full Name -->
+                            <div class="mb-4">
+                                <label for="fullName" class="neo-label">Nama Lengkap</label>
+                                <input type="text" id="fullName" class="form-control neo-input"
+                                    placeholder="Masukkan nama lengkap" name="fullName" required>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-4">
+                                <label for="email" class="neo-label">Alamat Email</label>
+                                <input type="email" id="email" class="form-control neo-input"
+                                    placeholder="contoh@email.com" name="email" required>
+                            </div>
+
+                            <!-- Phone Number -->
+                            <div class="mb-4">
+                                <label for="phoneNumber" class="neo-label">Nomor WhatsApp / HP</label>
+                                <input type="tel" id="phoneNumber" class="form-control neo-input"
+                                    placeholder="08xxxxxxxxxx" name="phoneNumber" required>
+                            </div>
+
+                            <!-- Role (Dropdown) -->
+                            <div class="mb-4">
+                                <label for="role" class="neo-label">Pilih Peran (Role)</label>
+                                <select id="role" class="form-select neo-input neo-select" name="role" required>
+                                    <option value="" disabled selected hidden>Pilih peran kamu...</option>
+                                    <option value="Buyer">Buyer (Pembeli Ternak)</option>
+                                    <option value="Seller">Seller (Peternak / Penjual)</option>
+                                </select>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-5">
+                                <label for="password" class="neo-label">Password</label>
+                                <input type="password" id="password" class="form-control neo-input"
+                                    placeholder="Buat password aman" name="password" required>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-neo-submit mb-3">Gabung Sekarang</button>
+
+                            <!-- Footer Form -->
+                            <div class="text-center mt-4">
+                                <p class="mb-0 fw-medium">Sudah punya akun? <a href="/login"
+                                        class="form-footer-link">Login
+                                        di
+                                        sini</a></p>
+                            </div>
+
+                        </form>
                     </div>
+                    <!-- Register Card End -->
 
-                    <form action="/register" method="POST">
-
-                        <!-- Full Name -->
-                        <div class="mb-4">
-                            <label for="fullName" class="neo-label">Nama Lengkap</label>
-                            <input type="text" id="fullName" class="form-control neo-input"
-                                placeholder="Masukkan nama lengkap" name="fullName" required>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-4">
-                            <label for="email" class="neo-label">Alamat Email</label>
-                            <input type="email" id="email" class="form-control neo-input" placeholder="contoh@email.com"
-                                name="email" required>
-                        </div>
-
-                        <!-- Phone Number -->
-                        <div class="mb-4">
-                            <label for="phoneNumber" class="neo-label">Nomor WhatsApp / HP</label>
-                            <input type="tel" id="phoneNumber" class="form-control neo-input" placeholder="08xxxxxxxxxx"
-                                name="phoneNumber" required>
-                        </div>
-
-                        <!-- Role (Dropdown) -->
-                        <div class="mb-4">
-                            <label for="role" class="neo-label">Pilih Peran (Role)</label>
-                            <select id="role" class="form-select neo-input neo-select" name="role" required>
-                                <option value="" disabled selected hidden>Pilih peran kamu...</option>
-                                <option value="Buyer">Buyer (Pembeli Ternak)</option>
-                                <option value="Seller">Seller (Peternak / Penjual)</option>
-                            </select>
-                        </div>
-
-                        <!-- Password -->
-                        <div class="mb-5">
-                            <label for="password" class="neo-label">Password</label>
-                            <input type="password" id="password" class="form-control neo-input"
-                                placeholder="Buat password aman" name="password" required>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-neo-submit mb-3">Gabung Sekarang</button>
-
-                        <!-- Footer Form -->
-                        <div class="text-center mt-4">
-                            <p class="mb-0 fw-medium">Sudah punya akun? <a href="/login" class="form-footer-link">Login
-                                    di
-                                    sini</a></p>
-                        </div>
-
-                    </form>
                 </div>
-                <!-- Register Card End -->
-
             </div>
         </div>
-    </div>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Bootstrap 5 JS Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
