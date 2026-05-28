@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Ternak - Sayap Cinta Farm</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts: Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #f4f1de;
+            /* Warna koran mentah */
+            --primary-yellow: #ffde4d;
+            /* Kuning terang */
+            --accent-green: #2ec4b6;
+            /* Hijau neon */
+            --accent-pink: #ff6b6b;
+            /* Pink pop */
+            --accent-blue: #3a86ff;
+            /* Biru pop */
+            --dark-border: #1a1a1a;
+            /* Border hitam pekat */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Space Grotesk', sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* --- TITLE STYLE --- */
+        .page-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 2.2rem;
+            letter-spacing: -1px;
+            display: inline-block;
+            background-color: #ffffff;
+            padding: 8px 20px;
+            border: 4px solid var(--dark-border);
+            box-shadow: 6px 6px 0px var(--dark-border);
+            margin-bottom: 30px;
+        }
+
+        /* --- BUTTONS STYLE --- */
+        .btn-neo-action {
+            font-weight: 700;
+            text-transform: uppercase;
+            border: 3px solid var(--dark-border) !important;
+            border-radius: 0px !important;
+            padding: 10px 20px;
+            box-shadow: 4px 4px 0px var(--dark-border);
+            transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-neo-action:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px var(--dark-border);
+        }
+
+        .btn-neo-action:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px var(--dark-border);
+        }
+
+        .btn-add-ternak {
+            background-color: var(--accent-green);
+            color: #fff !important;
+        }
+
+        .btn-add-ternak:hover {
+            background-color: #25a195;
+        }
+
+        .btn-logout {
+            background-color: var(--accent-pink);
+            color: #fff !important;
+        }
+
+        .btn-logout:hover {
+            background-color: #e05353;
+        }
+
+        /* --- SEARCH FORM --- */
+        .search-container {
+            background-color: #ffffff;
+            border: 4px solid var(--dark-border);
+            box-shadow: 8px 8px 0px var(--dark-border);
+            padding: 20px;
+            margin-bottom: 40px;
+        }
+
+        .neo-input-search {
+            border: 3px solid var(--dark-border) !important;
+            border-radius: 0px !important;
+            padding: 12px;
+            font-weight: 500;
+        }
+
+        .neo-input-search:focus {
+            box-shadow: 4px 4px 0px var(--dark-border) !important;
+            background-color: #fff;
+            outline: none;
+        }
+
+        .btn-search-submit {
+            background-color: var(--primary-yellow);
+            color: var(--dark-border);
+        }
+
+        .btn-search-reset {
+            background-color: #ffffff;
+            color: var(--dark-border);
+        }
+
+        /* --- TABLE NEORUTALISM STYLE --- */
+        .table-responsive-neo {
+            background-color: #ffffff;
+            border: 4px solid var(--dark-border);
+            box-shadow: 12px 12px 0px var(--dark-border);
+            margin-top: 20px;
+
+            /* Animasi Fade In Pop */
+            opacity: 0;
+            transform: translateY(20px);
+            animation: tablePopUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards;
+        }
+
+        .table-neo {
+            margin-bottom: 0px !important;
+        }
+
+        .table-neo thead th {
+            background-color: var(--primary-yellow) !important;
+            color: var(--dark-border) !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-bottom: 4px solid var(--dark-border) !important;
+            border-right: 2px solid var(--dark-border);
+            padding: 15px;
+        }
+
+        .table-neo tbody td {
+            border-bottom: 3px solid var(--dark-border) !important;
+            border-right: 2px solid var(--dark-border);
+            padding: 15px;
+            font-weight: 500;
+            vertical-align: middle;
+            color: var(--dark-border);
+        }
+
+        .table-neo tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        .table-neo tbody tr:hover {
+            background-color: rgba(255, 222, 77, 0.1);
+            /* Efek highlight baris */
+        }
+
+        /* Badge Status */
+        .badge-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border: 2px solid var(--dark-border);
+            font-weight: 700;
+            text-transform: uppercase;
+            background-color: var(--primary-yellow);
+            box-shadow: 2px 2px 0px var(--dark-border);
+        }
+
+        /* Tombol di dalam Tabel */
+        .btn-table-neo {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            padding: 6px 12px;
+            border: 2px solid var(--dark-border) !important;
+            border-radius: 0px !important;
+            box-shadow: 3px 3px 0px var(--dark-border);
+            transition: all 0.1s ease;
+        }
+
+        .btn-table-neo:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 4px 4px 0px var(--dark-border);
+        }
+
+        .btn-table-neo:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px var(--dark-border);
+        }
+
+        .btn-table-buy {
+            background-color: #a7c957;
+            color: var(--dark-border);
+        }
+
+        .btn-table-delete {
+            background-color: #f7a0a0;
+            color: var(--dark-border);
+        }
+
+        /* --- KEYFRAMES ANIMATION --- */
+        @keyframes tablePopUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Container Utama (Nanti tinggal disisipkan di bawah Navbar kamu) -->
+    <div class="container mt-5">
+
+        <% if (notification) { %>
+            <div
+                style="background-color: #d4edda; color: #155724; padding: 12px; border: 1px solid #c3e6cb; border-radius: 5px; margin-bottom: 15px; width: fit-content; font-weight: bold;">
+                ✓ <%= notification %>
+            </div>
+            <% } %>
+
+                <!-- Header Section -->
+                <div
+                    class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-4 gap-3">
+                    <div>
+                        <h1 class="page-title">Daftar Ternak Tersedia</h1>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <% if (userRole==='Seller' ) { %>
+                            <a href="/stock/add" class="btn-neo-action btn-add-ternak">+ Tambah Hewan Ternak Baru</a>
+                            <% } %>
+                                <a href="/logout" class="btn-neo-action btn-logout">Logout</a>
+                                <% if (userRole==='Buyer' ) { %>
+                                    <a href="/transactions/history" class="btn-neo-action btn-add-ternak"><button>Lihat
+                                            Riwayat Transaksi</button></a>
+                                    <% } %>
+                    </div>
+                </div>
+
+                <!-- Search Form Section -->
+                <div class="search-container">
+                    <form action="/stock" method="GET" class="row g-3 align-items-center">
+                        <div class="col-md-8">
+                            <input type="text" name="search" class="form-control neo-input-search"
+                                placeholder="Cari berdasarkan jenis (Sapi/Kambing)...">
+                        </div>
+                        <div class="col-md-4 d-flex gap-2">
+                            <button type="submit" class="btn-neo-action btn-search-submit flex-grow-1">Cari</button>
+                            <a href="/stock" class="btn-neo-action btn-search-reset flex-grow-1 text-center">Reset</a>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Table Section -->
+                <div class="table-responsive table-responsive-neo">
+                    <table class="table table-neo align-middle">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">No.</th>
+                                <th>Nama Ternak</th>
+                                <th>Jenis</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Harga</th>
+                                <th>Penjual / Pemilik</th>
+                                <th>Status</th>
+                                <th style="width: 180px; text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (livestocks.length===0) { %>
+                                <tr>
+                                    <td colspan="8" class="text-center py-4 fw-bold">
+                                        Tidak ada ternak yang tersedia saat ini.
+                                    </td>
+                                </tr>
+                                <% } else { %>
+                                    <% livestocks.forEach((animal, index)=> { %>
+                                        <tr>
+                                            <td class="fw-bold">
+                                                <%= index + 1 %>
+                                            </td>
+                                            <td class="fw-bold text-uppercase">
+                                                <%= animal.name %>
+                                            </td>
+                                            <td>
+                                                <%= animal.type %>
+                                            </td>
+                                            <td>
+                                                <%= animal.gender || '-' %>
+                                            </td>
+                                            <td class="fw-bold text-success">
+                                                <%= formatRupiah(animal.price) %>
+                                            </td>
+                                            <td>
+                                                <%= animal.User && animal.User.UserProfile ?
+                                                    animal.User.UserProfile.fullName : 'Tanpa Pemilik' %>
+                                            </td>
+                                            <td>
+                                                <span class="badge-status">
+                                                    <%= animal.status %>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex justify-content-center gap-2">
+                                                    <% if (userRole==='Buyer' ) { %>
+                                                        <a href="/stock/buy/<%= animal.id %>"
+                                                            class="btn btn-table-neo btn-table-buy">Beli</a>
+                                                        <% } %>
+                                                            <% if (userRole==='Seller' ) { %>
+                                                                <a href="/stock/delete/<%= animal.id %>"
+                                                                    onclick="return confirm('Apakah Anda yakin ingin menghapus ternak ini?')"
+                                                                    class="btn btn-table-neo btn-table-delete">Hapus</a>
+                                                                <% } %>
+
+                                                                    <% if (!userRole) { %>
+                                                                        <a href="/stock/buy/<%= animal.id %>"
+                                                                            class="btn btn-table-neo btn-table-buy">Silakan
+                                                                            login untuk bertransaksi</a>
+                                                                        <% } %>
+
+
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
