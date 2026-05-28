@@ -7,16 +7,16 @@ module.exports = {
       "Users",
       [
         {
-          email: "peternak@moomart.com",
-          password: "password123",
-          role: "Peternak",
+          email: "lala@lalacantik.com",
+          password: await bcrypt.hash("password123", 10),
+          role: "Seller",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          email: "pembeli@gmail.com",
-          password: "password123",
-          role: "Pembeli",
+          email: "elshad@ganteng.com",
+          password: await bcrypt.hash("password123", 10),
+          role: "Buyer",
           createdAt: new Date(),
           updatedAt: new Date(),
         },
@@ -28,18 +28,18 @@ module.exports = {
       "UserProfiles",
       [
         {
-          fullName: "Pak Eko Peternak Jaya",
+          fullName: "Lala Elshad",
           phoneNumber: "081234567890",
           address: "Banda Aceh",
-          UserId: 1, // Menyambung ke id 1 di sesuaikan id nya
+          UserId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
-          fullName: "Budi Pembeli Sukses",
+          fullName: "Elshad Lala",
           phoneNumber: "089876543210",
           address: "Aceh Besar",
-          UserId: 2, // Menyambung ke id 2
+          UserId: 2,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
