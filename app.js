@@ -59,11 +59,15 @@ app.post("/register", Controller.register);
 app.get("/login", Controller.formLogin);
 app.post("/login", Controller.login);
 app.get("/logout", Controller.logout);
+app.get("/aboutUs", Controller.aboutUs);
 app.get("/stock", isLoggedIn, Controller.getStock);
 app.get("/stock/add", isLoggedIn, Controller.formAdd);
 app.get("/transactions/history", isLoggedIn, Controller.transactionHistory);
 app.get("/seller/dashboard", isLoggedIn, Controller.sellerDashboard);
 app.post("/stock/add", isLoggedIn, upload.single("image"), Controller.addStock);
+
+app.get("/stock/:id", Controller.productDetail);
+
 app.get("/stock/buy/:id", isLoggedIn, Controller.buy);
 app.get("/stock/delete/:id", isLoggedIn, Controller.deleteStock);
 app.get("/stock/edit/:id", Controller.formEdit);
