@@ -135,15 +135,6 @@ class Controller {
       res.send(error);
     }
   }
-  // cart
-  // static async cart(req, res) {
-  //   try {
-  //     res.render("cart");
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.send(error);
-  //   }
-  // }
 
   // stock
   static async getStock(req, res) {
@@ -321,26 +312,42 @@ class Controller {
       res.send(error);
     }
   }
-  // static async productDetail(req, res) {
-  //   try {
-  //     let user = null;
 
-  //     if (req.session.userId) {
-  //       user = await User.findOne({
-  //         where: { id: req.session.userId },
-  //         include: UserProfile,
-  //       });
-  //     }
-  //     res.render("productDetail", {
-  //       userRole: req.session.userRole,
-  //       isLogin: req.session.userId,
-  //       user,
-  //     });
-  //   } catch (error) {
-  //     console.log(error);
-  //     res.send(error);
-  //   }
-  // }
+  static async productDetail(req, res) {
+    try {
+      const { id } = req.params;
+
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+
+      const product = await Livestock.findByPk(id, {
+        include: {
+          model: User,
+          include: UserProfile,
+        },
+      });
+
+      if (!product) {
+        return res.send("Produk tidak ditemukan");
+      }
+
+      res.render("productDetail", {
+        product,
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send(error);
+    }
+  }
 
   static async deleteStock(req, res) {
     try {
@@ -440,7 +447,22 @@ class Controller {
         order: [["id", "ASC"]],
       });
 
-      res.render("sellerDashboard", { myStocks });
+      // navbar
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+
+      res.render("sellerDashboard", {
+        myStocks,
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
     } catch (error) {
       console.log(error);
       res.send(error.message);
@@ -515,6 +537,28 @@ class Controller {
       }
       console.log(error);
       res.send(error.message);
+    }
+  }
+
+  static async aboutUs(req, res) {
+    try {
+      // navbar
+      let user = null;
+
+      if (req.session.userId) {
+        user = await User.findOne({
+          where: { id: req.session.userId },
+          include: UserProfile,
+        });
+      }
+      res.render("aboutUs", {
+        userRole: req.session.userRole,
+        isLogin: req.session.userId,
+        user,
+      });
+    } catch (error) {
+      console.log(error);
+      res.send(error);
     }
   }
 }
