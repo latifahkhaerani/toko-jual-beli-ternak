@@ -66,10 +66,9 @@ app.get("/seller/dashboard", isLoggedIn, Controller.sellerDashboard);
 app.post("/stock/add", isLoggedIn, upload.single("image"), Controller.addStock);
 app.get("/stock/buy/:id", isLoggedIn, Controller.buy);
 app.get("/stock/delete/:id", isLoggedIn, Controller.deleteStock);
-
 app.get("/stock/edit/:id", Controller.formEdit);
-
 app.post("/stock/edit/:id", upload.single("image"), Controller.updateStock);
+app.get("/stock/add-to-cart/:id", Controller.addToCart);
 
 app.listen(port, () => {
   console.log(`I <3 More ${port}`);
