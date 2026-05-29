@@ -34,7 +34,12 @@
             <div class="text-center">
               <h2 class="login-title">Masuk Akun</h2>
             </div>
-
+            <% if (notification) { %>
+              <div
+                style="background-color: #f8d7da; color: #721c24; padding: 12px; border: 1px solid #f5c6cb; border-radius: 5px; margin-bottom: 15px; width: fit-content; font-weight: bold;">
+                ✗ <%= notification %>
+              </div>
+            <% } %>
             <form action="/login" method="POST">
               <!-- Email -->
               <div class="mb-4">

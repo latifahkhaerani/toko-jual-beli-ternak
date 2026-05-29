@@ -89,6 +89,7 @@ class Controller {
       res.render("login", {
         userRole: req.session.userRole,
         isLogin: req.session.userId,
+        notification: req.query.notification || null, // notif
       });
     } catch (error) {
       console.log(error);
@@ -103,14 +104,19 @@ class Controller {
       const user = await User.findOne({ where: { email } });
 
       // validasi kalau usernya gak ada atau passwordnya ga ada
-      if (!user) {
-        return res.send("Email atau password salah!");
-      }
+      // if (!user) {
+      //   return res.send("Email atau password salah!");
+      // }
 
-      const isValidPassword = bcrypt.compareSync(password, user.password);
-
-      if (!isValidPassword) {
-        return res.send("Email atau password salah!");
+      // const isValidPassword = bcrypt.compareSync(password, user.password);
+      const isValidPassword = user
+        ? bcrypt.compareSync(password, user.password)
+        : false;
+      // if (!isValidPassword) {
+      //   return res.send("Email atau password salah!");
+      // }
+      if (!user || !isValidPassword) {
+        return res.redirect("/login?notification=Email atau password salah!");
       }
 
       req.session.userId = user.id;
