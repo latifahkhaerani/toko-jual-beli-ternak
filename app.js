@@ -59,6 +59,7 @@ app.post("/register", Controller.register);
 app.get("/login", Controller.formLogin);
 app.post("/login", Controller.login);
 app.get("/logout", Controller.logout);
+app.get("/aboutUs", Controller.aboutUs);
 app.get("/stock", isLoggedIn, Controller.getStock);
 app.get("/stock/add", isLoggedIn, Controller.formAdd);
 app.get("/transactions/history", isLoggedIn, Controller.transactionHistory);
