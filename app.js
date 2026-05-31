@@ -64,6 +64,7 @@ app.get("/stock/add", isLoggedIn, Controller.formAdd);
 app.get("/transactions/history", isLoggedIn, Controller.transactionHistory);
 app.get("/seller/dashboard", isLoggedIn, Controller.sellerDashboard);
 app.post("/stock/add", isLoggedIn, upload.single("image"), Controller.addStock);
+app.get("/stock/:id", Controller.productDetail);
 app.get("/stock/buy/:id", isLoggedIn, Controller.buy);
 app.get("/stock/delete/:id", isLoggedIn, Controller.deleteStock);
 app.get("/stock/edit/:id", Controller.formEdit);

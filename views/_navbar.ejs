@@ -3,7 +3,7 @@
 
     <!-- LOGO -->
     <a class="navbar-brand neo-brand" href="/">
-      Qurbani
+      Kandangi
     </a>
 
     <!-- SEARCH -->
@@ -21,16 +21,28 @@
     <!-- RIGHT SECTION -->
     <div class="d-flex align-items-center gap-3 ">
 
-      <!-- USER INFO -->
-      <% if (isLogin) { %>
-        <div class="me-5" style="display: flex; gap: 5px;  ">
-          <p class="m-0 p-0">Welcome, <%= user.UserProfile.fullName %>
+
+    <!-- USER INFO -->
+    <% if (isLogin) { %>
+
+      <% if (userRole === 'Seller') { %>
+        <a href="/seller/dashboard" class="me-5 d-flex align-items-center gap-2 text-decoration-none">
+          <p class="m-0 p-0">
+            Dashboard <%= user?.UserProfile?.fullName || 'User' %>
+          </p>
+        </a>
+      <% } else { %>
+        <div class="me-5 d-flex align-items-center gap-2">
+          <p class="m-0 p-0">
+            Welcome, <%= user?.UserProfile?.fullName || 'User' %>
           </p>
         </div>
-        <% } %>
+      <% } %>
+
+    <% } %>
 
           <% if (userRole==='Seller' ) { %>
-            <a href="/stock" class="neo-cart-icon d-flex align-items-center justify-content-center"
+            <a href="/stock/add" class="neo-cart-icon d-flex align-items-center justify-content-center"
               style="width: 45px;">
               <i class="bi bi-plus-square"></i>
             </a>

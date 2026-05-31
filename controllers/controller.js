@@ -9,8 +9,6 @@ const {
 
 const bcrypt = require("bcryptjs");
 class Controller {
-  // Home => tampilan utama
-  // Home => tampilan utama (Katalog Pasar Global)
   static async home(req, res) {
     try {
       const { search } = req.query;
@@ -47,6 +45,8 @@ class Controller {
           isLogin: req.session.userId,
           user,
           products,
+          // jika add to cart belum login
+          mustLogin: req.query.mustLogin || null,
         });
       }
 
@@ -71,6 +71,7 @@ class Controller {
         isLogin: req.session.userId,
         user,
         products,
+        mustLogin: req.query.mustLogin || null,
       });
     } catch (error) {
       console.log(error);
@@ -118,6 +119,7 @@ class Controller {
       res.render("login", {
         userRole: req.session.userRole,
         isLogin: req.session.userId,
+        notification: req.query.notification || null, // notif
       });
     } catch (error) {
       console.log(error);
@@ -132,14 +134,19 @@ class Controller {
       const user = await User.findOne({ where: { email } });
 
       // validasi kalau usernya gak ada atau passwordnya ga ada
-      if (!user) {
-        return res.send("Email atau password salah!");
-      }
+      // if (!user) {
+      //   return res.send("Email atau password salah!");
+      // }
 
-      const isValidPassword = bcrypt.compareSync(password, user.password);
-
-      if (!isValidPassword) {
-        return res.send("Email atau password salah!");
+      // const isValidPassword = bcrypt.compareSync(password, user.password);
+      const isValidPassword = user
+        ? bcrypt.compareSync(password, user.password)
+        : false;
+      // if (!isValidPassword) {
+      //   return res.send("Email atau password salah!");
+      // }
+      if (!user || !isValidPassword) {
+        return res.redirect("/login?notification=Email atau password salah!");
       }
 
       req.session.userId = user.id;
@@ -611,9 +618,9 @@ class Controller {
       const buyerId = req.session.userId;
 
       if (!buyerId) {
-        return res.send(
-          "Anda harus login terlebih dahulu untuk memasukkan ternak ke keranjang!",
-        );
+        const mustLogin =
+          "Anda harus login terlebih dahulu untuk memasukkan ternak ke keranjang!";
+        return res.redirect(`/?mustLogin=${encodeURIComponent(mustLogin)}`);
       }
 
       // Jika di session belum ada keranjang, buatkan array kosong

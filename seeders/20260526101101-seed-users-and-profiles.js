@@ -36,7 +36,7 @@ module.exports = {
       "UserProfiles",
       [
         {
-          fullName: "Lala Elshad",
+          fullName: "Lala seller",
           phoneNumber: "081234567890",
           address: "Makassar",
           UserId: lalaUser.id,
@@ -44,7 +44,7 @@ module.exports = {
           updatedAt: new Date(),
         },
         {
-          fullName: "Elshad Lala",
+          fullName: "Elshad buyer",
           phoneNumber: "089876543210",
           address: "Jakarta Barat",
           UserId: elshadUser.id,
